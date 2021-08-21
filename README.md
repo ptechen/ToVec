@@ -2,8 +2,8 @@
 Rust structure to slice.
     
 # example:
-    use to_vec::ToVec;
-    use to_vec_derive::ToVec;
+    use struct2vec::ToVec;
+    use struct2vec_derive::ToVec;
     use std::collections::HashMap;
     #[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
     pub struct Custom {
