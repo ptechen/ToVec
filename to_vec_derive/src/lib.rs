@@ -36,7 +36,7 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
     }
     let tokens = quote! {
         impl ToVec for #struct_name {
-            fn to_vec(&self) -> Vec<HashMap<String, Value>> {
+            pub fn to_vec(&self) -> Vec<HashMap<String, Value>> {
                 let mut array = vec![];
                 #(#insert_tokens)*
                 array

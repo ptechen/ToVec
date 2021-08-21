@@ -1,8 +1,9 @@
-use to_vec_derive::ToVec;
+
 use actix_web::{web, App, HttpRequest, HttpServer, Responder, HttpResponse};
 use serde_derive::{ Deserialize, Serialize};
 use serde_json::{Value, Map};
 use to_vec::ToVec;
+use to_vec_derive::ToVec;
 use std::collections::HashMap;
 
 #[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
@@ -15,8 +16,7 @@ pub struct User {
 }
 
 #[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
-pub struct Custom
-{
+pub struct Custom {
     name: String,
 }
 
