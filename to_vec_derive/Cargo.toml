@@ -1,0 +1,20 @@
+[package]
+name = "to_vec_derive"
+version = "0.1.0"
+edition = "2018"
+homepage = "https://github.com/ptechen"
+documentation = "https://github.com/ptechen/to_vec/blob/main/README.md"
+repository = "https://github.com/ptechen/to_vec.git"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+proc-macro = true
+
+[dependencies]
+heck = "0.3.3"
+quote = "1.0.9"
+serde_json = "1.0.66"
+syn = { version = "1.0.75", features = ["extra-traits"]  }
+to_vec = { path = "../to_vec" }
