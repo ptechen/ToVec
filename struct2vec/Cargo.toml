@@ -1,5 +1,5 @@
 [package]
-name = "to_vec"
+name = "struct2vec"
 version = "0.1.0"
 edition = "2018"
 homepage = "https://github.com/ptechen"
