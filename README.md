@@ -7,6 +7,7 @@ Rust structure to slice.
     use std::collections::HashMap;
     #[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
     pub struct Custom {
+        #[to_vec(comment = "用户名")]
         name: String,
     }
 
