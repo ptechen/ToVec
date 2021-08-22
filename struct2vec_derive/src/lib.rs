@@ -1,18 +1,12 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+extern crate proc_macro2;
 
-extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Fields};
 use syn::spanned::Spanned;
+use proc_macro2::{Ident, Span};
 
-#[proc_macro_derive(ToVec,attributes(to_vec))]
+#[proc_macro_derive(ToVec, attributes(to_vec))]
 pub fn to_vec_derive(input: TokenStream) -> TokenStream {
     let mut insert_tokens = vec![];
     let parsed_input: DeriveInput = parse_macro_input!(input);
@@ -21,10 +15,10 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
         Data::Struct(s) => {
             if let Fields::Named(name_fields) = s.fields {
                 let a = name_fields.named;
-                for i in a {
-                    let field = i.ident.as_ref().unwrap();
-                    let comment = get_filed_attr(&i);
-                    let mut comment_val = field;
+                for field in a {
+                    let comment = get_filed_attr(&field);
+                    let field = field.ident.as_ref().unwrap();
+                    let mut comment_val = &Ident::new("_", Span::call_site());
                     if comment.is_some() {
                         comment_val = comment.as_ref().unwrap();
                     }
@@ -32,7 +26,7 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
                         let mut map = HashMap::new();
                         map.insert(String::from("key"), Value::from(stringify!(#field)));
                         map.insert(String::from("value"), Value::from(self.#field.to_owned()));
-                        if stringify!(#comment_val) != stringify!(#field) {
+                        if stringify!(#comment_val) != "_" {
                             map.insert(String::from("comment"), Value::from(stringify!(#comment_val)));
                         }
                         array.push(map);
@@ -55,18 +49,18 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
     proc_macro::TokenStream::from(tokens)
 }
 
-fn get_filed_attr(field: &syn::Field) ->Option<syn::Ident> {
+fn get_filed_attr(field: &syn::Field) -> Option<syn::Ident> {
     for attr in field.attrs.iter() {
         if let Ok(syn::Meta::List(syn::MetaList {
-            ref path,
-            ref nested,
-            ..
-        })) = attr.parse_meta()
+                                      ref path,
+                                      ref nested,
+                                      ..
+                                  })) = attr.parse_meta()
 
         {
             if let Some(p) = path.segments.first() {
                 if p.ident == "to_vec" {
-                    if let Some(syn::NestedMeta::Meta(syn::Meta::NameValue(kv))) = nested.first(){
+                    if let Some(syn::NestedMeta::Meta(syn::Meta::NameValue(kv))) = nested.first() {
                         if kv.path.is_ident("comment") {
                             if let syn::Lit::Str(ref ident_str) = kv.lit {
                                 return Some(syn::Ident::new(
@@ -82,3 +76,27 @@ fn get_filed_attr(field: &syn::Field) ->Option<syn::Ident> {
     }
     None
 }
+
+// fn get_filed_type(ty: &syn::Type) -> String {
+//     if let syn::Type::Path(syn::TypePath {
+//                                ref path,
+//                                ..
+//                            }) = ty {
+//         if let Some(seg) = path.segments.last() {
+//             eprintln!("{:#?}", &seg.ident.to_string());
+//             return seg.ident.to_string();
+//             // if seg.ident == outer_ident_name {
+//             //     if let syn::PathArguments::AngleBracketed(
+//             //         syn::AngleBracketedGenericArguments {
+//             //             args,
+//             //             ..
+//             //         }) = &seg.arguments {
+//             //         if let Some(syn::GenericArgument::Type(inner_type)) = args.first() {
+//             //             return Some(inner_type);
+//             //         }
+//             //     }
+//             // }
+//         }
+//     }
+//     String::new()
+// }

@@ -32,7 +32,7 @@ impl From<Custom> for Value{
 
 async fn greet(_req: HttpRequest) -> impl Responder {
     let st = Custom{name:String::from("123")};
-    let name = User{id:1, name: String::from("123"), active: true, array: vec![String::from("321")], st: vec![st]};
+    let name = User{id: 1, name: String::from("123"), active: true, array: vec![String::from("321")], st: vec![st]};
     HttpResponse::Ok().json(name.to_vec())
 }
 
