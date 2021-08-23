@@ -5,6 +5,7 @@ use serde_json::{Value, Map};
 use struct2vec::ToVec;
 use struct2vec_derive::ToVec;
 use std::collections::HashMap;
+use from_value_derive::From;
 
 #[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
 pub struct User {
@@ -17,18 +18,11 @@ pub struct User {
     st: Vec<Custom>,
 }
 
-#[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
+#[derive(From, Debug, Clone, Deserialize, Serialize)]
 pub struct Custom {
     name: String,
 }
 
-impl From<Custom> for Value{
-    fn from(params: Custom) -> Self {
-        let mut map = Map::new();
-        map.insert("name".to_string(), Value::from(params.name));
-        Value::Object(map)
-    }
-}
 
 async fn greet(_req: HttpRequest) -> impl Responder {
     let st = Custom{name:String::from("123")};
