@@ -9,7 +9,7 @@ use from_value_derive::From;
 
 #[derive(ToVec, Debug, Clone, Deserialize, Serialize)]
 pub struct User {
-    #[to_vec(comment = "ID")]
+    #[to_vec(comment = "ID", field_type = "ttttt")]
     id: usize,
     #[to_vec(comment = "用户名")]
     name: String,
@@ -22,7 +22,6 @@ pub struct User {
 pub struct Custom {
     name: String,
 }
-
 
 async fn greet(_req: HttpRequest) -> impl Responder {
     let st = Custom{name:String::from("123")};

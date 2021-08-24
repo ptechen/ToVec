@@ -13,3 +13,4 @@ serde_json = "1.0.66"
 struct2vec = "0.1.0"
 struct2vec_derive = { path = "../struct2vec_derive" }
 from_value_derive = "0.1.0"
+rust_decimal = "1.15.0"
