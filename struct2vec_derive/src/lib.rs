@@ -33,7 +33,7 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
                         insert_token = quote! {
                         let mut map = HashMap::new();
                         map.insert(String::from("key"), Value::from(stringify!(#field)));
-                        let v:Value = serde_json::to_value(self.#field).unwrap();
+                        let v:Value = serde_json::to_value(self.#field.as_ref()).unwrap();
                         map.insert(String::from("value"), Value::from(v));
                         if stringify!(#comment_val) != "_" {
                             map.insert(String::from("comment"), Value::from(stringify!(#comment_val)));
