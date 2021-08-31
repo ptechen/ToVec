@@ -18,6 +18,7 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
                 for field in a {
                     let comment = get_filed_attr(&field, "comment");
                     let field_type = get_filed_attr(&field, "field_type");
+                    let ty = get_filed_type(&field.ty);
                     let field = field.ident.as_ref().unwrap();
                     let mut comment_val = &Ident::new("_", Span::call_site());
                     let mut field_type_val = &Ident::new("_", Span::call_site());
@@ -27,7 +28,23 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
                     if field_type.is_some() {
                         field_type_val = field_type.as_ref().unwrap();
                     }
-                    let insert_token = quote! {
+                    let insert_token;
+                    if ty == "Option" {
+                        insert_token = quote! {
+                        let mut map = HashMap::new();
+                        map.insert(String::from("key"), Value::from(stringify!(#field)));
+                        let v:Value = serde_json::to_value(self.#field).unwrap();
+                        map.insert(String::from("value"), Value::from(v));
+                        if stringify!(#comment_val) != "_" {
+                            map.insert(String::from("comment"), Value::from(stringify!(#comment_val)));
+                        }
+                        if stringify!(#field_type_val) != "_" {
+                            map.insert(String::from("field_type"), Value::from(stringify!(#field_type_val)));
+                        }
+                        array.push(map);
+                    };
+                    } else {
+                        insert_token = quote! {
                         let mut map = HashMap::new();
                         map.insert(String::from("key"), Value::from(stringify!(#field)));
                         map.insert(String::from("value"), Value::from(self.#field.to_owned()));
@@ -39,6 +56,7 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
                         }
                         array.push(map);
                     };
+                    }
                     insert_tokens.push(insert_token);
                 }
             }
@@ -54,6 +72,7 @@ pub fn to_vec_derive(input: TokenStream) -> TokenStream {
             }
         }
     };
+    eprintln!("{}", tokens.to_string());
     proc_macro::TokenStream::from(tokens)
 }
 
@@ -87,26 +106,26 @@ fn get_filed_attr(field: &syn::Field, sub_attr: &str) -> Option<syn::Ident> {
     None
 }
 
-// fn get_filed_type(ty: &syn::Type) -> String {
-//     if let syn::Type::Path(syn::TypePath {
-//                                ref path,
-//                                ..
-//                            }) = ty {
-//         if let Some(seg) = path.segments.last() {
-//             eprintln!("{:#?}", &seg.ident.to_string());
-//             return seg.ident.to_string();
-//             // if seg.ident == outer_ident_name {
-//             //     if let syn::PathArguments::AngleBracketed(
-//             //         syn::AngleBracketedGenericArguments {
-//             //             args,
-//             //             ..
-//             //         }) = &seg.arguments {
-//             //         if let Some(syn::GenericArgument::Type(inner_type)) = args.first() {
-//             //             return Some(inner_type);
-//             //         }
-//             //     }
-//             // }
-//         }
-//     }
-//     String::new()
-// }
+fn get_filed_type(ty: &syn::Type) -> String {
+    if let syn::Type::Path(syn::TypePath {
+                               ref path,
+                               ..
+                           }) = ty {
+        if let Some(seg) = path.segments.last() {
+            // eprintln!("{:#?}", &seg.ident.to_string());
+            return seg.ident.to_string();
+            // if seg.ident == outer_ident_name {
+            //     if let syn::PathArguments::AngleBracketed(
+            //         syn::AngleBracketedGenericArguments {
+            //             args,
+            //             ..
+            //         }) = &seg.arguments {
+            //         if let Some(syn::GenericArgument::Type(inner_type)) = args.first() {
+            //             return Some(inner_type);
+            //         }
+            //     }
+            // }
+        }
+    }
+    String::new()
+}
