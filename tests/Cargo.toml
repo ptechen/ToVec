@@ -1,0 +1,12 @@
+[package]
+name = "tests"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+from_value_derive = "0.1.1"
+serde_json = "1.0.81"
+struct2vec = { path = "../struct2vec"}
+struct2vec_derive = { path = "../struct2vec_derive"}
