@@ -14,8 +14,8 @@ description = "Rust structure to slice."
 proc-macro = true
 
 [dependencies]
-quote = "1.0.9"
-serde_json = "1.0.66"
-syn = { version = "1.0.75", features = ["extra-traits"]  }
-struct2vec = "0.1.0"
-proc-macro2 = "1.0.28"
+quote = "^1.0"
+serde_json = "^1.0"
+syn = { version = "^1.0", features = ["extra-traits"]  }
+struct2vec = "^0.1"
+proc-macro2 = "^1.0"
