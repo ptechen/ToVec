@@ -1,2 +1,2 @@
 [workspace]
-members = ["struct2vec", "struct2vec_derive", "main", "tests"]
+members = ["struct2vec_derive"]
